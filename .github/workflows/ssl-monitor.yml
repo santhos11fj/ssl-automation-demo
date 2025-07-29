@@ -14,12 +14,18 @@ jobs:
       - name: Install OpenSSL
         run: choco install openssl.light -y
 
-      - name: Run SSL Test
+      - name: Run SSL Test with Simulated Expiry
         shell: cmd
         run: |
-          echo Running SSL Check...
+          echo ========================================
+          echo 🔐 Starting SSL Automation Pipeline
+          echo ========================================
           mkdir ssl-test
           cd ssl-test
-          openssl req -x509 -nodes -days 2 -newkey rsa:2048 -keyout demo.key -out demo.crt -subj "/CN=localhost"
+          echo ✅ Generating a short-lived SSL certificate...
+          openssl req -x509 -nodes -days 1 -newkey rsa:2048 -keyout demo.key -out demo.crt -subj "/CN=localhost"
+          echo ✅ Certificate successfully created.
           openssl x509 -in demo.crt -enddate -noout
-          echo ✅ SSL Check Complete.
+          echo ⚠️ ALERT: Simulated SSL Expiry Warning (For Demo)!
+          echo ========================================
+          echo ✅ SSL Automation Workflow Completed
