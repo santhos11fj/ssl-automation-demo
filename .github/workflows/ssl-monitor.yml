@@ -14,7 +14,7 @@ jobs:
       - name: Install OpenSSL
         run: choco install openssl.light -y
 
-      - name: Run SSL Test with Simulated Expiry
+      - name: Run SSL Test with Expiry & Auto-Renew
         shell: cmd
         run: |
           echo ========================================
@@ -22,10 +22,12 @@ jobs:
           echo ========================================
           mkdir ssl-test
           cd ssl-test
-          echo ✅ Generating a short-lived SSL certificate...
-          openssl req -x509 -nodes -days 1 -newkey rsa:2048 -keyout demo.key -out demo.crt -subj "/CN=localhost"
-          echo ✅ Certificate successfully created.
+          echo ✅ Generating an expired certificate (-days 0)...
+          openssl req -x509 -nodes -days 0 -newkey rsa:2048 -keyout demo.key -out demo.crt -subj "/CN=localhost"
+          echo ✅ Expired certificate created.
           openssl x509 -in demo.crt -enddate -noout
-          echo ⚠️ ALERT: Simulated SSL Expiry Warning (For Demo)!
+          echo ⚠️ ALERT: Certificate expired! Auto-renewal triggered...
+          openssl req -x509 -nodes -days 5 -newkey rsa:2048 -keyout demo.key -out demo.crt -subj "/CN=localhost"
+          echo ✅ New certificate generated successfully (after auto-renewal).
           echo ========================================
-          echo ✅ SSL Automation Workflow Completed
+          echo ✅ SSL Auto-Renewal Workflow Completed
