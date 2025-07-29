@@ -13,6 +13,39 @@ jobs:
 
       - name: Install OpenSSL
         run: choco install openssl.light -y
+name: SSL Automation CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  ssl-check:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Display Files
+        run: dir
+
+      - name: Run SSL Automation Batch
+        shell: cmd
+        run: |
+          echo ========================================
+          echo 🔐 Running SSL Automation in GitHub CI/CD
+          echo ========================================
+          cd ${{ github.workspace }}
+          ssl_automation_final.bat
+
+      - name: Upload Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: ssl-monitor-log
+          path: ssl_automation_log.txt
 
       - name: Run SSL Test with Expiry & Auto-Renew
         shell: cmd
