@@ -2,11 +2,11 @@ name: SSL Automation CI/CD Workflow
 
 on:
   schedule:
- - cron: '*/5 * * * *'   # Runs every 5 minutes for testings
-  workflow_dispatch:
+    - cron: '*/5 * * * *'   # ✅ Runs every 5 minutes for testing
+  workflow_dispatch:        # ✅ Allows manual triggering
   push:
     branches:
-      - main
+      - main                # ✅ Runs when you push to main
 
 jobs:
   ssl-check:
@@ -23,7 +23,7 @@ jobs:
         shell: cmd
         run: |
           echo ========================================
-          echo 🔐 Running SSL Automation in GitHub CI/CD
+          echo 🔐 Running SSL Automation (Every 5 Min Test)
           echo ========================================
           cd ${{ github.workspace }}
           ssl_automation_final_ci.bat
