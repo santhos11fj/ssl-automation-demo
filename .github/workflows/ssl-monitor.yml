@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:    # allows manual triggering from Actions tab
+  schedule:
+    - cron: '0 9 * * *'   # Runs every day at 9:00 UTC
+  workflow_dispatch:       # Allows manual trigger from Actions tab
 
 jobs:
   ssl-check:
-    runs-on: windows-latest   # Run on a Windows GitHub runner
+    runs-on: windows-latest   # Windows runner to execute .bat
 
     steps:
       - name: Checkout Repository
@@ -21,7 +23,7 @@ jobs:
         shell: cmd
         run: |
           echo ========================================
-          echo 🔐 Executing SSL Automation in GitHub CI/CD
+          echo 🔐 Running Scheduled SSL Automation in GitHub CI/CD
           echo ========================================
           cd ${{ github.workspace }}
           ssl_automation_final_ci.bat
