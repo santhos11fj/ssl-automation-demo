@@ -2,7 +2,7 @@ name: SSL Automation CI/CD Workflow
 
 on:
   schedule:
-  - cron: '45 14 * * *'   # Runs daily at 15:45 UK time (14:45 UTC during BST)
+ - cron: '*/5 * * * *'   # Runs every 5 minutes for testing
   workflow_dispatch:
   push:
     branches:
