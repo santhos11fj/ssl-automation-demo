@@ -1,34 +1,34 @@
 name: SSL Automation CI/CD Workflow
 
 on:
+  schedule:
+  - cron: '45 14 * * *'   # Runs daily at 15:45 UK time (14:45 UTC during BST)
+  workflow_dispatch:
   push:
     branches:
       - main
-  schedule:
-    - cron: '0 9 * * *'   # Runs every day at 9:00 UTC
-  workflow_dispatch:       # Allows manual trigger from Actions tab
 
 jobs:
   ssl-check:
-    runs-on: windows-latest   # Windows runner to execute .bat
+    runs-on: windows-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: List Files (Debug)
+      - name: List Repository Files
         run: dir
 
-      - name: Run SSL Automation Batch Script
+      - name: Run SSL Automation Script
         shell: cmd
         run: |
           echo ========================================
-          echo 🔐 Running Scheduled SSL Automation in GitHub CI/CD
+          echo 🔐 Running SSL Automation in GitHub CI/CD
           echo ========================================
           cd ${{ github.workspace }}
           ssl_automation_final_ci.bat
 
-      - name: Upload Logs
+      - name: Upload SSL Logs
         uses: actions/upload-artifact@v4
         with:
           name: ssl-monitor-log
