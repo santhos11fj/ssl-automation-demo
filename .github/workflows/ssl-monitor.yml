@@ -27,7 +27,7 @@ jobs:
           ssl_automation_final_ci.bat
 
       - name: Upload Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ssl-monitor-log
           path: ssl_automation_log.txt
