@@ -2,65 +2,32 @@ name: SSL Automation CI/CD Workflow
 
 on:
   push:
-    branches: [ main ]
-
-jobs:
-  ssl-check:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Install OpenSSL
-        run: choco install openssl.light -y
-name: SSL Automation CI/CD Workflow
-
-on:
-  push:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch:    # allows manual triggering from Actions tab
 
 jobs:
   ssl-check:
-    runs-on: windows-latest
+    runs-on: windows-latest   # Run on a Windows GitHub runner
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Display Files
+      - name: List Files (Debug)
         run: dir
 
-      - name: Run SSL Automation Batch
+      - name: Run SSL Automation Batch Script
         shell: cmd
         run: |
           echo ========================================
-          echo 🔐 Running SSL Automation in GitHub CI/CD
+          echo 🔐 Executing SSL Automation in GitHub CI/CD
           echo ========================================
           cd ${{ github.workspace }}
-          ssl_automation_final.bat
+          ssl_automation_final_ci.bat
 
       - name: Upload Logs
         uses: actions/upload-artifact@v3
         with:
           name: ssl-monitor-log
           path: ssl_automation_log.txt
-
-      - name: Run SSL Test with Expiry & Auto-Renew
-        shell: cmd
-        run: |
-          echo ========================================
-          echo 🔐 Starting SSL Automation Pipeline
-          echo ========================================
-          mkdir ssl-test
-          cd ssl-test
-          echo ✅ Generating an expired certificate (-days 0)...
-          openssl req -x509 -nodes -days 0 -newkey rsa:2048 -keyout demo.key -out demo.crt -subj "/CN=localhost"
-          echo ✅ Expired certificate created.
-          openssl x509 -in demo.crt -enddate -noout
-          echo ⚠️ ALERT: Certificate expired! Auto-renewal triggered...
-          openssl req -x509 -nodes -days 5 -newkey rsa:2048 -keyout demo.key -out demo.crt -subj "/CN=localhost"
-          echo ✅ New certificate generated successfully (after auto-renewal).
-          echo ========================================
-          echo ✅ SSL Auto-Renewal Workflow Completed
